@@ -1,9 +1,10 @@
 {
-  "platforms": ["media"],
-  "keywords": ["AI", "爆款", "趋势"],
+  "platforms": ["llm_custom"],
+  "keywords": ["AI", "爆款", "趋势", "短视频", "热度"],
+
   "push": {
     "enable": true,
-    "telegram_token": "your_token_here",
-    "telegram_userid": "your_id_here"
+    "telegram_token": "7888386968:AAERrLKVj-f-7Qf2GQ7MyfBOOp4tT6gSrWs",
+    "telegram_userid": "7682368486"
   }
 }
