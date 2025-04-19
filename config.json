@@ -1,0 +1,9 @@
+{
+  "platforms": ["media"],
+  "keywords": ["AI", "爆款", "趋势"],
+  "push": {
+    "enable": true,
+    "telegram_token": "your_token_here",
+    "telegram_userid": "your_id_here"
+  }
+}
