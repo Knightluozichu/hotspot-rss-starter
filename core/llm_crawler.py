@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from requests import RequestException
 
 # LLM API 配置（请替换为你的 DeepSeek API Key）
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
@@ -27,16 +28,26 @@ def fetch_llm_items(source: str) -> list:
         return []
 
     target_url = LLM_URL_MAPPING[source]
+    
+    # 先获取页面 HTML
+    try:
+        response = requests.get(target_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10)
+        html_content = response.text
+    except RequestException as e:
+        print(f"[LLM FETCH HTML ERROR] {e}")
+        html_content = ""
+
     prompt = f"""
 你是一名结构化网页抽取助手，请从以下网页中提取一个结构化列表，字段包括：
 - 标题
 - 热度（或分享数，评论数，播放数）
 - 视频链接（或原始链接）
 
+下面是网页的 HTML 片段（前 2000 字符）：
+{html_content[:2000]}
+
 输出格式为 JSON 数组，如果 hot 数量太多换算成万为单位，每个元素如下格式：
 {{"title": "标题", "hot": "1234", "link": "https://xxx"}}
-
-网页地址：{target_url}
 """
 
     headers = {
