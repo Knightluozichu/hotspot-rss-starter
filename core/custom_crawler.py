@@ -100,25 +100,14 @@ def fetch_rebang_list(tab: str) -> list:
 
 def fetch_custom_items(source: str) -> list:
     """
-    根据 custom:// 或 llm:// 协议路由调用对应平台爬虫或 LLM 逻辑。
+    根据 custom:// 协议路由调用对应平台爬虫。
     返回格式：[{ "title": ..., "hot": ..., "link": ... }]
     """
     # 1) rebang.today 热榜（轻量专用 JSON 接口）
-    if source.startswith("llm://rebang/"):
+    if source.startswith("custom://rebang/"):
         tab = source.split("/")[-1]
         return fetch_rebang_list(tab)
 
-    # 2) 普通自定义爬虫示例（可替换为真实 requests 逻辑）
-    if source == "custom://douyin/hotlist":
-        return [
-            {"title": "【抖音爆款1】热度999万", "hot": "999w", "link": "https://v.douyin.com/xxx1", "platform": "douyin"},
-            {"title": "【抖音爆款2】热度822万", "hot": "822w", "link": "https://v.douyin.com/xxx2", "platform": "douyin"},
-        ]
-    elif source == "custom://taobao/hotitems":
-        return [
-            {"title": "【淘宝爆品】美白面膜", "hot": "月销10万+", "link": "https://item.taobao.com/xxx1", "platform": "taobao"},
-            {"title": "【淘宝爆品】筋膜枪", "hot": "月销5万+", "link": "https://item.taobao.com/xxx2", "platform": "taobao"},
-        ]
 
     # 3) 其他 custom:// 源可在此处扩展
     return []

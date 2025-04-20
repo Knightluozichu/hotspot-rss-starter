@@ -4,7 +4,6 @@ from core.analyzer import filter_by_keywords
 from core.pusher import push_telegram
 from core.pushdeer import push_pushdeer
 from core.custom_crawler import fetch_custom_items
-from core.llm_crawler import fetch_llm_items
 from core.db import DB
 
 CONFIG_PATH = "config.json"
@@ -34,8 +33,6 @@ def main():
         for url in feed_urls:
             print(f"📡 抓取源: {url}")
             if url.startswith("llm://"):
-                items = fetch_llm_items(url)
-            else:
                 items = fetch_custom_items(url)
             if not items:
                 continue
@@ -56,8 +53,6 @@ def main():
             for url in feed_urls:
                 print(f"📡 抓取源: {url}")
                 if url.startswith("llm://"):
-                    items = fetch_llm_items(url)
-                else:
                     items = fetch_custom_items(url)
                 if not items:
                     continue
