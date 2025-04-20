@@ -16,15 +16,15 @@ def dashboard(request: Request):
     conn = sqlite3.connect(str(DB_PATH))
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT platform, title, hot, link, created_at
+        SELECT platform, title, hot, link
         FROM items
-        ORDER BY created_at DESC
+        ORDER BY rowid DESC
         LIMIT 50
     """)
     rows = cursor.fetchall()
     conn.close()
     items = [
-        {"platform": r[0], "title": r[1], "hot": r[2], "link": r[3], "time": r[4]}
+        {"platform": r[0], "title": r[1], "hot": r[2], "link": r[3]}
         for r in rows
     ]
     return templates.TemplateResponse("dashboard.html", {"request": request, "items": items})
