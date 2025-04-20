@@ -44,7 +44,8 @@ def main():
                     it["platform"] = platform_clean
                     clean_items.append(it)
             if clean_items:
-                inserted = DB.insert_items(clean_items)
+                # inserted = DB.insert_items(clean_items)
+                inserted = DB().insert_items(clean_items)
                 # print(f"💾 已写入 {inserted} 条到数据库")
                 all_results.extend(clean_items)
     else:
