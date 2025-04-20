@@ -100,11 +100,11 @@ def fetch_rebang_list(tab: str) -> list:
 
 def fetch_custom_items(source: str) -> list:
     """
-    根据 custom:// 协议路由调用对应平台爬虫。
+    根据 llm:// 协议路由调用对应平台爬虫。
     返回格式：[{ "title": ..., "hot": ..., "link": ... }]
     """
     # 1) rebang.today 热榜（轻量专用 JSON 接口）
-    if source.startswith("custom://rebang/"):
+    if source.startswith("llm://rebang/"):
         tab = source.split("/")[-1]
         return fetch_rebang_list(tab)
 
