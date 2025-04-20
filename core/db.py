@@ -45,8 +45,9 @@ class _DB:
                 title       TEXT    NOT NULL,
                 hot         TEXT,
                 link        TEXT,
+                day         TEXT    NOT NULL,           -- yyyy-mm-dd for UNIQUE scope
                 created_at  TIMESTAMP NOT NULL,
-                UNIQUE(platform, title, date(created_at))
+                UNIQUE(platform, title, day)
             );
             """
         )
@@ -58,13 +59,16 @@ class _DB:
     def insert_items(self, items: Iterable[Dict[str, Any]]):
         if not items:
             return 0
+        now = datetime.utcnow()
+        day_str = now.date().isoformat()
         rows = [
             (
                 it.get("platform", "unknown"),
                 it.get("title", "").strip(),
-                it.get("hot", "").strip(),
+                str(it.get("hot", "")).strip(),
                 it.get("link", "").strip(),
-                datetime.utcnow(),
+                day_str,
+                now,
             )
             for it in items
         ]
@@ -75,8 +79,8 @@ class _DB:
                 cur.execute(
                     """
                     INSERT OR IGNORE INTO hot_items
-                    (platform, title, hot, link, created_at)
-                    VALUES (?,?,?,?,?)
+                    (platform, title, hot, link, day, created_at)
+                    VALUES (?,?,?,?,?,?)
                     """,
                     row,
                 )

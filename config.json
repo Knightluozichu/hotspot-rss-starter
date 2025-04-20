@@ -6,5 +6,11 @@
     "enable": true,
     "telegram_token": "7888386968:AAERrLKVj-f-7Qf2GQ7MyfBOOp4tT6gSrWs",
     "telegram_userid": "7682368486"
+  },
+  "pushdeer": {
+    "enable": true,
+    "pushkey": "PDU1TkbtAjWU86tPCSEnURrBikVd1wmszTz4g",
+    "title": "自媒体热榜更新",
+    "server":"http://206.237.12.27:8800"
   }
 }

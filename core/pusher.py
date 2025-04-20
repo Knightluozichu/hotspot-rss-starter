@@ -5,6 +5,21 @@ from html import escape
 TG_API = "https://api.telegram.org/bot{token}/sendMessage"
 
 
+def push_pushdeer(title, message, pushkey, server="http://206.237.12.27:8800"):
+    url = f"{server}/message/push"
+    payload = {
+        "pushkey": pushkey,
+        "text": title,
+        "desp": message,
+        "type": "text"
+    }
+    try:
+        resp = requests.post(url, data=payload, timeout=10)
+        resp.raise_for_status()
+        print("[PushDeer] ✅ 推送成功")
+    except Exception as e:
+        print("[PushDeer] ❌ 推送失败", e)
+
 def _chunk_rows(rows, max_chars=3500):
     """Split rows list into chunks whose rendered HTML length stays under max_chars."""
     chunk, size, out = [], 0, []

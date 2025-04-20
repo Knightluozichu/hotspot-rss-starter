@@ -2,7 +2,9 @@ import json
 import os
 from core.analyzer import filter_by_keywords
 from core.pusher import push_telegram
+from core.pushdeer import push_pushdeer
 from core.custom_crawler import fetch_custom_items
+from core.llm_crawler import fetch_llm_items
 from core.db import DB
 
 CONFIG_PATH = "config.json"
@@ -29,20 +31,41 @@ def main():
         feed_urls = load_feeds(platform)
         for url in feed_urls:
             print(f"📡 抓取源: {url}")
-            items = fetch_custom_items(url)
-            # print("   ➜ 爬回条目数:", len(items))          # ←① 原始条目
-            # hits = filter_by_keywords(items, keywords)
-            # print("   ➜ 关键词命中:", len(hits))          # ←② 命中条目
-            inserted = DB.insert_items(items)
-            print(f"💾 已写入 {inserted} 条到数据库")
-            all_results.extend(items[:10]) # ←③ 仅取前 10 条
+            # 区分 llm 源和 HTTP 源
+            if url.startswith("llm://"):
+                items = fetch_llm_items(url)
+            else:
+                items = fetch_custom_items(url)
+
+            if not items:
+                continue
+
+            # 统一为 dict 并标记 platform
+            clean_items = []
+            for it in items[:10]:
+                if isinstance(it, dict):
+                    it["platform"] = platform
+                    clean_items.append(it)
+            # 写入数据库
+            if clean_items:
+                inserted = DB.insert_items(clean_items)
+                # print(f"💾 已写入 {inserted} 条到数据库")
+                all_results.extend(clean_items)
 
     print(f"🔍 匹配关键词结果：{len(all_results)} 条")
 
+    # Telegram 推送
     if config.get("push", {}).get("enable"):
         token = config["push"]["telegram_token"]
         user_id = config["push"]["telegram_userid"]
         push_telegram(all_results, token, user_id)
+
+    # PushDeer 推送
+    if config.get("pushdeer", {}).get("enable"):
+        key = config["pushdeer"]["pushkey"]
+        title = config["pushdeer"].get("title", "热点更新通知")
+        server = config["pushdeer"].get("server", "http://206.237.12.27:8800")
+        push_pushdeer(all_results, key, title, server)
 
 if __name__ == "__main__":
     main()
