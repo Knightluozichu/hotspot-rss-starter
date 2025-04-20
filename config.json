@@ -1,5 +1,5 @@
 {
-  "platforms": ["douyin", "xiaohongshu", "bilibili", "zhihu", "kuaishou", "acfun"],
+  "platforms": ["llm_custom"],
   "keywords": ["AI", "爆款", "趋势", "短视频", "热度"],
 
   "push": {
