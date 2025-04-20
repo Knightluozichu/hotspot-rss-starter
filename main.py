@@ -44,7 +44,9 @@ def main():
             clean_items = []
             for it in items[:10]:
                 if isinstance(it, dict):
-                    it["platform"] = platform
+                    # 动态从 URL 提取真实平台名
+                    platform_clean = url.split("/")[-1].lower()
+                    it["platform"] = platform_clean
                     clean_items.append(it)
             # 写入数据库
             if clean_items:
