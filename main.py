@@ -27,32 +27,49 @@ def main():
     platforms = config.get("platforms", [])
 
     all_results = []
-    for platform in platforms:
-        feed_urls = load_feeds(platform)
+
+    # 如果只使用 llm_custom，一个文件中包含所有 URL
+    if platforms == ["llm_custom"]:
+        feed_urls = load_feeds("llm_custom")
         for url in feed_urls:
             print(f"📡 抓取源: {url}")
-            # 区分 llm 源和 HTTP 源
             if url.startswith("llm://"):
                 items = fetch_llm_items(url)
             else:
                 items = fetch_custom_items(url)
-
             if not items:
                 continue
-
-            # 统一为 dict 并标记 platform
             clean_items = []
             for it in items[:10]:
                 if isinstance(it, dict):
-                    # 动态从 URL 提取真实平台名
+                    # 从 URL 提取平台名
                     platform_clean = url.split("/")[-1].lower()
                     it["platform"] = platform_clean
                     clean_items.append(it)
-            # 写入数据库
             if clean_items:
                 inserted = DB.insert_items(clean_items)
                 # print(f"💾 已写入 {inserted} 条到数据库")
                 all_results.extend(clean_items)
+    else:
+        for platform in platforms:
+            feed_urls = load_feeds(platform)
+            for url in feed_urls:
+                print(f"📡 抓取源: {url}")
+                if url.startswith("llm://"):
+                    items = fetch_llm_items(url)
+                else:
+                    items = fetch_custom_items(url)
+                if not items:
+                    continue
+                clean_items = []
+                for it in items[:10]:
+                    if isinstance(it, dict):
+                        it["platform"] = platform
+                        clean_items.append(it)
+                if clean_items:
+                    inserted = DB.insert_items(clean_items)
+                    # print(f"💾 已写入 {inserted} 条到数据库")
+                    all_results.extend(clean_items)
 
     print(f"🔍 匹配关键词结果：{len(all_results)} 条")
 
