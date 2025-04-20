@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>热点数据看板</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>📊 热点数据（近 50 条）</h1>
+    <table>
+        <tr><th>平台</th><th>标题</th><th>热度</th><th>链接</th><th>时间</th></tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.platform }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.hot }}</td>
+            <td><a href="{{ item.link }}" target="_blank">🔗</a></td>
+            <td>{{ item.time }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
